@@ -1,0 +1,46 @@
+
+echo 'Getting aws token'
+. set_aws_token
+
+if [[ $(docker network ls | grep docker-network) ]]; then
+    echo 'Docker network already created'
+else
+    echo 'Creating docker network'
+    docker network create -d bridge docker-network
+fi
+
+if [[ $(docker ps | grep docker:dind.*2375-2376/tcp.*docker) ]]; then
+    echo 'Docker daemon container already created'
+else
+    echo 'Creating docker daemon container'
+    docker run \
+        --rm \
+        --privileged \
+        --name docker \
+        -d \
+        --network docker-network \
+        -e DOCKER_TLS_CERTDIR=/certs \
+        -v some-docker-certs-ca:/certs/ca \
+        -v some-docker-certs-client:/certs/client \
+        docker:dind
+fi
+
+echo 'Running docker client'
+
+docker run \
+    --rm \
+    --network docker-network \
+    -e DOCKER_TLS_CERTDIR=/certs \
+    -v some-docker-certs-client:/certs/client:ro \
+    --name docker-client \
+    -it \
+    -e DOCKER_TLS_VERIFY=1 \
+    -e DOCKER_HOST=tcp://docker:2376 \
+    -e DOCKER_CERT_PATH=/certs/client \
+    -e DOCKER_MACHINE_NAME=machine-name \
+    -e AWS_DEFAULT_REGION=us-east-1 \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
+    ci_cd /bin/bash
+
