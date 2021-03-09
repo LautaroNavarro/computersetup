@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ ! -d "~/.safe-env-3/" ]; then
+    echo "Creating python 3 environment"
+    virtualenv --python $(which python3) ~/.safe-env-3
+fi
+
+source ~/.safe-env-3/bin/activate

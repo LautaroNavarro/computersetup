@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ ! -d "~/.safe-env-2/" ]; then
+    echo "Creating python 2 environment"
+    virtualenv --python $(which python2) ~/.safe-env-2
+fi
+
+source ~/.safe-env-2/bin/activate
