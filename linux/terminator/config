@@ -1,0 +1,21 @@
+[global_config]
+[keybindings]
+  split_horiz = <Shift><Alt>d
+  split_vert = <Alt>d
+  close_term = <Alt>w
+  scaled_zoom = <Alt>Return
+  full_screen = <Shift><Alt>Return
+[profiles]
+  [[default]]
+    background_darkness = 0.81
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+[plugins]
